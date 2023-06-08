@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="isLoading"
+            type="Boolean" />
+
+        <variable
+            name="productsList"
+            type="java.util.List&lt;com.pravin.desai.swipe.network.model.Product&gt;" />
+
+        <variable
+            name="iOnProductClickListener"
+            type="com.pravin.desai.swipe.ui.adapter.IOnProductClickListener" />
+
+        <variable
+            name="ionAddProductClickListener"
+            type="com.pravin.desai.swipe.ui.productdetails.IonAddProductClickListener" />
+
+        <variable
+            name="product"
+            type="com.pravin.desai.swipe.network.model.Product" />
+        <variable
+            name="totalInCart"
+            type="Integer" />
+
+    </data>
+<androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.productdetails.ProductDetailsFragment">
+
+        <include
+            android:id="@+id/btn"
+            layout="@layout/layout_product_details"
+            product="@{product}"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        
+        <LinearLayout
+            android:id="@+id/stepper"
+            android:orientation="horizontal"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/llProductQty"
+                android:background="@drawable/bg_rounded_colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="24dp"
+                android:animateLayoutChanges="true"
+                android:orientation="horizontal"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/tvPDPDiscountedPrice"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+                <ImageView
+                    android:id="@+id/ivProdQtyMinus"
+                    android:visibility="@{totalInCart>0?View.VISIBLE:View.GONE}"
+                    android:onClick="@{()->ionAddProductClickListener.onRemoveProduct()}"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1"
+                    android:scaleType="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/tvProdQty"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_qty_minus" />
+
+                <TextView
+                    android:id="@+id/tvProdQty"
+                    android:visibility="@{totalInCart>0?View.VISIBLE:View.GONE}"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:text="@{totalInCart.toString()}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/ivProdQtyPlus"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/ivProdQtyMinus"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/ivProdQtyPlus"
+                    android:onClick="@{()->ionAddProductClickListener.onAddProduct()}"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1"
+                    android:scaleType="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/tvProdQty"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_qty_plus" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/similar"
+            android:textSize="18sp"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/black"
+            android:layout_marginTop="20dp"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/stepper"
+
+            android:text="Other Similar products"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/productsRv"
+            iOnProductClickListener="@{iOnProductClickListener}"
+            productsList="@{productsList}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="25dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/similar"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmerLayout"
+            android:visibility="@{isLoading?View.VISIBLE:View.GONE}"
+            app:layout_constraintTop_toTopOf="@+id/productsRv"
+            app:layout_constraintBottom_toBottomOf="@+id/productsRv"
+            app:layout_constraintStart_toStartOf="@+id/productsRv"
+            app:layout_constraintEnd_toEndOf="@+id/productsRv"
+            android:layout_width="0dp"
+            android:layout_height="0dp">
+            <include
+
+                layout="@layout/layout_shimmer_cards_list"/>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.core.widget.NestedScrollView>
+</layout>
+
